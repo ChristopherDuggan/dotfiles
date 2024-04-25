@@ -1,0 +1,257 @@
+" double quotes like the one at the start of this line starts a comment
+
+" plugged is a plugin manager for vim. All of its function calls go between the 'call plug#begin(...' and 'call plug#end(...'
+call plug#begin('~/.vim/plugged')
+
+" Plugins
+
+Plug 'sheerun/vim-polyglot' " additional syntax highlighting
+Plug 'tpope/vim-commentary' "toggle comments
+Plug 'vimwiki/vimwiki' " a thingie that lets you build your own wikis really quickly
+Plug 'scrooloose/nerdtree' " a file explorer that opens in a new split
+Plug 'mattn/emmet-vim' " abbreviation expansion
+let NERDTreeQuitOnOpen=1 " close nerdtree after opening a file
+let NERDTreeShowLineNumbers=1 " show line numbers in the nerdtree buffer (gasp)
+let NERDTreeShowHidden=1 " shows hidden files. for all of these options with a number, 1 means 'true' 0 means 'false'
+Plug 'morhetz/gruvbox' " a colorscheme
+Plug 'vim-airline/vim-airline' " some cool settings for the status bar (the space at the bottom of the screen that shows information about your current session"
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+call plug#end()
+
+" persistent undo/redo between sessions
+if !isdirectory($HOME . "/.vim/undodir")
+    call mkdir($HOME . "/.vim/undodir", "p")
+endif
+
+" Settings
+
+colorscheme gruvbox " set the color scheme to that gruvbox plugin found above
+set bg=dark " dark background
+
+set term=xterm-256color
+
+let g:gruvbox_contrast_dark='hard' " one of the color options from the gruvbox plugin
+set undofile "use undo file
+set undodir=~/.vim/undodir "undo file loction
+set nocompatible
+set encoding=utf-8 " default encoding language
+set t_Co=256 " t_Co is the number of colors used
+set number " adds line numbering
+syntax on "adds syntax highlighting
+set tabstop=2 " from this line down to line 31 are some tab settings that I like, open all 4 in the help file if you'd like to read up on what each does
+set expandtab
+set shiftwidth=2
+" set smarttab
+"" filetype indent on " uses indentation rules based on what kind of file you're in
+filetype plugin on
+""set autoindent " this and smartindent are a couple of settings I like that you may or may not. Read their help file entries
+"set smartindent
+set clipboard=unnamedplus " uses the system clipboard when doing yanks, deletes, etc. WARNING: THIS SETTING IS DIFFERENT ON A MAC AND UNNAMEDPLUS WILL NOT WORK. https://stackoverflow.com/questions/30691466/what-is-difference-between-vims-clipboard-unnamed-and-unnamedplus-settings
+set mouse=a " lets you use your mouse
+set showcmd " shows commands in the last line of the screen
+set incsearch " moves the cursor as you're typing your search queries
+set ignorecase " ignore capitalization when searching
+set smartcase " use capitalization when searching IF you include a capital letter in your query
+set hlsearch " highlight the results of your search
+set linebreak " 'visually' wrap lines that are longer than the screen, this does NOT actually create a new line, just the appearance of one. For example, line 41, the line that this comment starts on is probably visually a line or two up for you now on your monitor because this sentence is so long. However, if you look at the start of the next line, you'll see that it's 42. This distinction is important when you have code that cares about line breaks
+set textwidth=80 " move text down to a new line whenever it's longer than 80 characters. I will sometimes turn this off in a file by typing giving the command set tw=0
+set splitbelow "when splitting, puts the new window below the current one (default is above)
+set splitright " when splitting, puts the new window to the right of the current one (default is the left)
+" hide mode indicator on bottom (it's doubled by airline)
+set noshowmode " shows what mode you're in on the bottom line of the screen. My 'airline' plugin already has that info
+set lazyredraw " :help lz - waits until macros are done to redraw the screen
+" set signcolumn=yes " when you're working with a linter, it will show symbols on the left when something is wrong in what's called the signcolumn. If it's not on by default, that column will pop up and disappear when the warning pops up and disappear when it's gone. This can be really visually annoying so I uncomment this setting when I do stuff involving the signcolumn
+let g:instant_markdown_autostart=0 " turn off autostart for instant-markdown plugin
+let g:instant_markdown_autoscroll = 0
+
+" set vimwiki paths and settings
+let wiki_1 = {}
+let wiki_1.path = '~/vimwiki/'
+let wiki_1.syntax = 'markdown'
+let wiki_1.ext = '.md'
+
+let wiki_2 = {}
+let wiki_2.path = '~/code/wod/'
+let wiki_2.syntax = 'markdown'
+let wiki_2.ext = '.md'
+
+let wiki_3 = {}
+let wiki_3.path = '~/prep/standard/'
+let wiki_3.syntax = 'markdown'
+let wiki_3.ext = '.md'
+
+let g:vimwiki_list=[wiki_1, wiki_2, wiki_3]
+
+
+" scrolloff sets a minimum number of lines to display below the line that your cursor is on. This gives you a bit of 'breathing room' at the top and bottom of the screen when moving around. I've set it to 999 here to keep the screen centered on my cursor whenever I scroll
+set scrolloff=5
+
+" fuzzyfind settings. path+=**; says search up and down recursively for the entered path, wildmenu gives a little tab completion menu, wildignore sets folders not to search through
+set path+=**;
+set wildmenu
+set wildignore+=*.git/*,*/node_modules/*
+
+"Vim's builtin autocomplete checks all of the 'included files' this stops it from taking forever
+" FIND OUT WHY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+set complete-=i
+
+" Mappings
+map ZA :qa!<enter>
+
+" a mapping is a custom key combination that performs a specified action. you can basically make any key do anything in any mode!
+
+" set my 'leader key' to the spacebar. the leader key basically gives you an 'extra mode' to throw commands in since most of the letters on your keyboard already have jobs to do in normal mode.
+let mapleader=" "
+
+" the following comments are on the line above rather than at the end of the line so they don't get interpreted as part of the mapping. Mappings are typed one key after the other, not pressing all the keys at the same time
+
+"nnoremap means 'remap this in normal mode.' This lets me hit the tab key to save
+noremap <Tab> :w<CR>
+
+"quit with spacebar followed by q
+
+nnoremap <leader>q :q<CR>
+
+map <leader>k i✓<ESC>
+map <leader>sp :set spell!<CR>
+
+map <leader>ls :term live-server<CR>
+
+map <leader>so :source %<CR>
+" opens the NERDTree file browser
+map <leader>n :NERDTreeToggle<CR>
+
+" opens my vimrc in a new tab (tabe is short for 'tab edit')
+map <leader>tv :tabe ~/.vimrc<CR>
+
+" opens a terminal instance in a vertical split
+map <leader>vt :vert term<CR>
+
+" runs nodemon on the current file in a :term
+map <leader>dj :vert term nodemon %<CR>
+
+" runs nodemon no the current *python* file in a :term"
+map <leader>dp :vert term nodemon --exec python3 %<CR>
+
+
+" starts a command that is literally ':tab help '. Then I finish it off and it opens the help file for whatever I've typed in a new tab
+map <leader>th :tab help<space>
+
+" '!' means 'I'm going to write a terminal command' '%' means 'this current file'. Combined, this says 'run the current file in node'
+map <leader>rj :!node %<CR>
+
+map <leader>rp :!python3 %<CR>
+
+map <leader>dp :vert term nodemon --exec python3 %<CR>
+
+map<leader>o :!xdg-open %<CR>
+
+" :find finds a file and then edits it
+map <leader>f :find<space>
+
+" :tabfind is the same as :find but opens the result in a new tab
+map <leader>tf :tabfind<space>
+
+" Jump to the next instance of my custom placeholder '<++>', delete it, and enter insert mode
+map <leader><space> /<++><CR>va>c
+" autocommands! an autocommand tells vim to automatically run a command whenever a specified event happens https://learnvimscriptthehardway.stevelosh.com/chapters/12.html
+
+"toggle cursor crosshair
+map <leader>cx :set cursorline! cursorcolumn!<CR>
+
+" get vimwiki off my TAB
+" nmap <Leader>l <Plug>VimwikiFollowLink
+map <leader><Tab> <Plug>VimwikiNextLink
+map <leader><S-Tab> <Plug>VimwikiPrevLink
+
+" vimwiki file shortcut
+map <leader>vf i[[vfile:]]<LEFT><LEFT>
+
+" vimwiki code challenge file link
+map <leader>vc i[[vfile:~/code-challenges/]]<LEFT><LEFT>
+
+" git stuff
+map <leader>gs :!git status<CR>
+map <leader>gl :!git log<CR>
+map <leader>ga :!git add %<CR><CR>
+map <leader>gA :!git add .<CR><CR>
+map <leader>gc :!git commit -v<CR>
+map <leader>gb :!git branch
+map <leader>gr :!git remote -v<CR>
+map <leader>gh :!git checkout
+map <leader>gp :!git push<CR>
+
+"toggle vertically centering screen on cursor
+map <leader>zz :call VerticalCenteringToggle()<CR>
+
+" switches the textwidth to 0 if it's set else, set it to 80
+map <leader>tw :call TextWidthToggle()<CR>
+function! TextWidthToggle()
+    if &textwidth
+        setlocal textwidth=0
+        set tw
+    else
+        setlocal textwidth=80
+        set tw
+    endif
+endfunction
+
+" run diff on all open windows
+map <leader>dif :call ToggleDiff()<CR>
+function! ToggleDiff() 
+    if (&diff)
+        :windo diffoff
+    else 
+        :windo diffthis
+    endif
+endfunction
+
+function! VerticalCenteringToggle()
+    if &scrolloff==5
+        setlocal scrolloff=999
+    else
+        setlocal scrolloff=5
+    endif
+endfunction
+
+" an 'augroup' is a group of autocommands
+" remove buffer-local autocommands for the current buffer
+" for all filetypes, turn on the 't' and 'p' format options (t: Auto-wrap text using textwidth. p: Don't break lines at single spaces that follow periods.
+augroup Formatting
+    au!
+    au FileType * setlocal formatoptions=tp
+augroup end
+
+" Weird Stuff - I use this section to put in stuff that I don't understand at a glance and will comment on extensively
+
+" BGcolor fix:
+" vim hardcodes background color erase even if the terminfo file does
+" not contain bce (not to mention that libvte based terminals
+" incorrectly contain bce in their terminfo  files). This causes
+" incorrect background rendering when using a color theme with a
+" background color.
+let &t_ut=''
+
+
+imap ,, <C-y>,
+
+
+  function! VimwikiLinkHandler(link)
+    " Use Vim to open external files with the 'vfile:' scheme.  E.g.:
+    "   1) [[vfile:~/Code/PythonProject/abc123.py]]
+    "   2) [[vfile:./|Wiki Home]]
+    let link = a:link
+    if link =~# '^vfile:'
+      let link = link[1:]
+    else
+      return 0
+    endif
+    let link_infos = vimwiki#base#resolve_link(link)
+    if link_infos.filename == ''
+      echomsg 'Vimwiki Error: Unable to resolve link!'
+      return 0
+    else
+      exe 'tabnew ' . fnameescape(link_infos.filename)
+      return 1
+    endif
+  endfunction
